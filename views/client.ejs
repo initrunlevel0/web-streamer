@@ -12,8 +12,10 @@
 </head>
 <script>
 var socket = io.connect('http://' + document.domain + ':' + location.port);
-socket.on('playStream', function(data) {
-    $("#video").get(0).stop();
+socket.on('connect', function() {
+
+});
+socket.on('playStreamClient', function(data) {
     $("#video").html("");
     $("#name").html(data.name);
     $("#video").html('<video width="640" height="480" id="video" autoplay controls><source src="/media" id="source" type="video/webm"> Your browser does not support the video tag. </video>');

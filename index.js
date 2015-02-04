@@ -109,7 +109,7 @@ io.on('connection', function(socket) {
     socket.on('playStream', function(data, callback) {
         songStarted = new Date();
         playedStream = data.file;
-        socket.broadcast.emit('playStream', data);
+        socket.broadcast.emit('playStreamClient', data);
         callback();
     });
 });
