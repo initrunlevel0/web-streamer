@@ -1,0 +1,55 @@
+<!doctype html>
+
+<html>
+
+<head>
+    <title>Web Streamer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css"/>
+    <script src="../static/jquery.min.js"></script>
+    <script src="../static/socket.io.js"></script>
+
+</head>
+<script>
+var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+var getDir = function(dir) {
+    socket.emit("getDir", {dir: dir}, function(result) {
+        $("#dirList").html("");
+        for(i in result) {
+            if(result[i].isDir) {
+                $("#dirList").append('<li><button class="btn btn-success" onclick="getDir(\'' + result[i].path + '\');">' + result[i].name + '</button></li>')
+            } else {
+                $("#dirList").append('<li><button class="btn btn-warning" onclick="openFile(\'' + result[i].path + '\');">' + result[i].name + '</button></li>')
+            }
+        }
+    });
+};
+
+var openFile = function(file) {
+    $("#video").html('<video width="640" height="480" id="video" autoplay controls><source src="/media?q=' + file + '" id="source" type="video/webm"> Your browser does not support the video tag. </video>');
+}
+
+$(document).ready(function() {
+
+    getDir("/");
+
+});
+</script>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <!-- File Selector -->
+            <h4>Directory List</h4>
+            <ol id="dirList" style="list-style-type:none;">
+            </ol>
+        </div>
+        <div class="col-md-8" id="video">
+            <!-- Player for Server -->
+        </div>
+
+    </div>
+</div>
+</body>
