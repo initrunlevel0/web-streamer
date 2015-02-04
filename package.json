@@ -1,0 +1,24 @@
+{
+  "name": "web-streamer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://initrunlevel0@github.com/initrunlevel0/web-streamer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/initrunlevel0/web-streamer/issues"
+  },
+  "homepage": "https://github.com/initrunlevel0/web-streamer",
+  "dependencies": {
+    "ejs": "^2.2.4",
+    "express": "^4.11.2",
+    "socket.io": "^1.3.3"
+  }
+}
