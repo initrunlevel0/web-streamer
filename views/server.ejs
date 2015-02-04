@@ -18,19 +18,26 @@ var getDir = function(dir) {
         $("#dirList").html("");
         for(i in result) {
             if(result[i].isDir) {
-                $("#dirList").append('<li><button class="btn btn-success" onclick="getDir(\'' + result[i].path + '\');">' + result[i].name + '</button></li>')
+                $("#dirList").append('<li><a href="#" onclick="getDir(\'' + result[i].path + '\');">' + result[i].name + '</a></li>')
             } else {
-                $("#dirList").append('<li><button class="btn btn-warning" onclick="openFile(\'' + result[i].path + '\');">' + result[i].name + '</button></li>')
+                $("#dirList").append('<li><a href="#" onclick="openFile(\'' + result[i].name + '\', \'' + result[i].path + '\');">' + result[i].name + '</a></li>')
             }
         }
     });
 };
 
-var openFile = function(file) {
-    $("#video").html('<video width="640" height="480" id="video" autoplay controls><source src="/media?q=' + file + '" id="source" type="video/webm"> Your browser does not support the video tag. </video>');
+var openFile = function(name, file) {
+    $("#video").html("");
+    socket.emit("playStream", {name: name, file: file}, function() {
+        $("#name").html(name);
+        $("#video").html('<video width="640" height="480" id="video" autoplay controls><source src="/media" id="source" type="video/webm"> Your browser does not support the video tag. </video>');
+        $("#video").get(0).play();
+    });
+
 }
 
 $(document).ready(function() {
+    $("#video").html('<video width="640" height="480" id="video" autoplay controls><source src="/media" id="source" type="video/webm"> Your browser does not support the video tag. </video>');
 
     getDir("/");
 
@@ -43,10 +50,14 @@ $(document).ready(function() {
         <div class="col-md-4">
             <!-- File Selector -->
             <h4>Directory List</h4>
-            <ol id="dirList" style="list-style-type:none;">
-            </ol>
+            <ul id="dirList">
+            </ul>
         </div>
-        <div class="col-md-8" id="video">
+        <div class="col-md-8">
+            <h4>Now Playing</h4>
+            <h5 id="name"></h5>
+            <div id="video">
+            </div>
             <!-- Player for Server -->
         </div>
 

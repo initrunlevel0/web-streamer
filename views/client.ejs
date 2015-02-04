@@ -1,0 +1,38 @@
+<!doctype html>
+
+<html>
+
+<head>
+    <title>Web Streamer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css"/>
+    <script src="../static/jquery.min.js"></script>
+    <script src="../static/socket.io.js"></script>
+
+</head>
+<script>
+var socket = io.connect('http://' + document.domain + ':' + location.port);
+socket.on('playStream', function(data) {
+    $("#video").get(0).stop();
+    $("#video").html("");
+    $("#name").html(data.name);
+    $("#video").html('<video width="640" height="480" id="video" autoplay controls><source src="/media" id="source" type="video/webm"> Your browser does not support the video tag. </video>');
+    $("#video").get(0).play();
+});
+
+$(document).ready(function() {
+    $("#video").html('<video width="640" height="480" id="video" autoplay controls><source src="/media" id="source" type="video/webm"> Your browser does not support the video tag. </video>');
+});
+
+</script>
+
+<body>
+<div class="container">
+    <div class="row">
+        <h4>Now Playing</h4>
+        <h5 id="name"></h5>
+        <div id="video">
+        </div>
+    </div>
+</div>
+</body>

@@ -35,10 +35,6 @@ if ('development' == app.get('env')) {
 
 app.use('/static', express.static(__dirname + '/static'));
 
-app.get('/', function(req, res) {
-    res.redirect('/login');
-});
-
 app.get('/login', function(req, res) {
     res.render('login.ejs');
 });
@@ -60,6 +56,10 @@ var verifyLogin = function(req, res, next) {
     }
 };
 
+app.get('/', function(req, res) {
+    res.render('client.ejs');
+});
+
 app.get('/server', verifyLogin, function(req, res) {
     res.render('server.ejs');
 });
@@ -68,12 +68,12 @@ app.get('/logout', verifyLogin, function(req, res) {
     req.session.login = false;
 });
 
+var songStarted  = new Date();
+var playedStream = "";
 app.get('/media', function(req, res) {
-    var path = config.media_dir + "/" + require('path').normalize(req.query.q);
-    console.log(path);
-
-    res.contentType('webm');
-    var ff = ffmpeg(path).format('webm').videoBitrate('96k').audioBitrate('96k');
+    var path = config.media_dir + "/" + require('path').normalize(playedStream);
+    var second = (new Date() - songStarted) / 1000.0;
+    var ff = ffmpeg(path).format('webm').videoBitrate('96k').audioBitrate('48k').seek(second);
     ff.on('error', function(err) {
         console.log(err.message);
     });
@@ -81,8 +81,6 @@ app.get('/media', function(req, res) {
         res.end();
     })
     ff.pipe(res);
-
-
 });
 
 io.on('connection', function(socket) {
@@ -109,6 +107,10 @@ io.on('connection', function(socket) {
     });
 
     socket.on('playStream', function(data, callback) {
+        songStarted = new Date();
+        playedStream = data.file;
+        socket.broadcast.emit('playStream', data);
+        callback();
     });
 });
 
